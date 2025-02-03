@@ -5,7 +5,7 @@ $xml = simplexml_load_file($xmlstr);
 
 foreach ($xml->channel->item as $item) {
    
-    echo $item->title . "<br>";
+    echo $item->title . "\n";
 }
 
 ?>
