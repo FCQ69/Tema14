@@ -19,10 +19,8 @@ fallecimientos_section = soup.find('dt', text="Fallecimientos")
 fallecimientos_data = []
 
 if fallecimientos_section:
-   
     listas_fallecimientos = fallecimientos_section.find_all_next('ul')
 
- 
     contador = 0
     limite = 20  
 
@@ -45,17 +43,19 @@ if fallecimientos_section:
                 # Cargo 
                 cargo = nombre_y_cargo.replace(nombre, "").strip()
 
-                # Extraer la edad
-                edad_match = re.search(r"\((\d+)(?:-(\d+))?\)", cargo)
+                # Extraer la edad (mejorado)
+                edad_match = re.search(r"\((\d+)(?:-(\d+))?\)|(\d+);", cargo)
+
                 if edad_match:
-                    if edad_match.group(2):  # rango de edad
-                        edad = edad_match.group(2) 
-                    else:
-                        edad = edad_match.group(1)  #edad dis
+                    if edad_match.group(1):  # Edad entre paréntesis
+                        edad = edad_match.group(2) if edad_match.group(2) else edad_match.group(1)
+                    else:  # Edad separada por ";"
+                        edad = edad_match.group(3)
                 else:
                     edad = "Desconocida"
 
-                cargo = re.sub(r"\(\d+(?:-\d+)?\)", "", cargo).strip()
+                # Limpiar el cargo eliminando la edad y cualquier texto asociado
+                cargo = re.sub(r"\(\d+(?:-\d+)?\)|\d+;", "", cargo).strip()
 
                 # JSON
                 fallecimientos_data.append({
